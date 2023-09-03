@@ -3,7 +3,10 @@ import "./styles/style.css"
 
 // Hooks
 import { useState } from "react"
+
+// Components
 import Control from "./components/Control"
+import Days from "./components/Days"
 
 export default function App() {
 	const [today, setToday] = useState<Date>(new Date())
@@ -11,6 +14,7 @@ export default function App() {
 		<>
 			<div className="calendar">
 				<Control today={today} setToday={setToday} />
+				<Days date={today} />
 				{/* <div className="modal">
 				<div className="overlay"></div>
 				<div className="modal-body">
