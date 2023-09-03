@@ -1,47 +1,16 @@
 // Styles
 import "./styles/style.css"
 
-// Libraries
-import { addMonths, format, getMonth, setMonth } from "date-fns"
-
 // Hooks
 import { useState } from "react"
+import Control from "./components/Control"
 
 export default function App() {
 	const [today, setToday] = useState<Date>(new Date())
-	function previousMonthHandler() {
-		setToday((current) => {
-			return new Date(current.setMonth(current.getMonth() - 1))
-		})
-	}
-	function nextMonthHandler() {
-		setToday((current) => {
-			return new Date(current.setMonth(current.getMonth() + 1))
-		})
-	}
 	return (
 		<>
 			<div className="calendar">
-				<div className="header">
-					<button className="btn">Today</button>
-					<div>
-						<button
-							className="month-change-btn"
-							onClick={previousMonthHandler}
-						>
-							&lt;
-						</button>
-						<button
-							className="month-change-btn"
-							onClick={nextMonthHandler}
-						>
-							&gt;
-						</button>
-					</div>
-					<span className="month-title">
-						{format(today, "MMM y")}
-					</span>
-				</div>
+				<Control today={today} setToday={setToday} />
 				{/* <div className="modal">
 				<div className="overlay"></div>
 				<div className="modal-body">
