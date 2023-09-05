@@ -8,7 +8,7 @@ export type eventType = {
 	endTime: string | undefined
 	eventColor: string
 	id: string
-	currentDate: Date
+	currentDate: string
 }
 
 // Hooks
@@ -34,20 +34,24 @@ export default function NewEventForm({
 	const endTimeRef = useRef<HTMLInputElement>(null)
 	const [allDayCheckbox, setAllDayCheckbox] = useState<boolean>(false)
 	const [eventColor, setEventColor] = useState<string>("blue")
+	const year = date.getFullYear()
+	const month = date.getMonth()
 	function formHandler(e: FormEvent) {
 		e.preventDefault()
-		const chosenStartHour: number = Number(
-			startTimeRef.current?.value.split(":")[0],
-		)
-		const chosenEndHour: number = Number(
-			endTimeRef.current?.value.split(":")[0],
-		)
-		const startHour = new Date().setHours(chosenStartHour)
-		const start = format(startHour, "HH")
-		const endHour = new Date().setHours(chosenEndHour)
-		const end = format(endHour, "HH")
-		if (start > end)
-			return alert("start date must be before the end date")
+		if (!allDayCheckbox) {
+			const chosenStartHour: number = Number(
+				startTimeRef.current?.value.split(":")[0],
+			)
+			const chosenEndHour: number = Number(
+				endTimeRef.current?.value.split(":")[0],
+			)
+			const startHour = new Date().setHours(chosenStartHour)
+			const start = format(startHour, "HH")
+			const endHour = new Date().setHours(chosenEndHour)
+			const end = format(endHour, "HH")
+			if (start > end)
+				return alert("start date must be before the end date")
+		}
 		const event: eventType = {
 			name: nameRef.current?.value,
 			allDay: allDayCheckbox,
@@ -55,13 +59,14 @@ export default function NewEventForm({
 			startTime: startTimeRef.current?.value,
 			endTime: endTimeRef.current?.value,
 			id: crypto.randomUUID(),
-			currentDate: date,
+			currentDate: format(
+				new Date(year, month, currentDate),
+				"d/MM/YYY",
+			),
 		}
 		getData(event)
 		return statusSetter(false)
 	}
-	const year = date.getFullYear()
-	const month = date.getMonth()
 	return createPortal(
 		<>
 			<div className="modal" ref={modalRef}>

@@ -13,6 +13,10 @@ export default function Day({ el, id }: { el: number; id: string }) {
 	const { date } = useDate()
 	const [newEventStatus, setNewEventStatus] = useState<boolean>(false)
 	const [events, setEvents] = useState<eventType[] | undefined>([])
+	const currentDay = format(
+		new Date(date.getFullYear(), date.getMonth(), el),
+		"d/MM/YYY",
+	)
 	function addEventHandler() {
 		setNewEventStatus(true)
 	}
@@ -20,6 +24,7 @@ export default function Day({ el, id }: { el: number; id: string }) {
 		setNewEventStatus(false)
 	}
 	function getFormData(data: eventType) {
+		console.log(data.currentDate)
 		setEvents((current) => {
 			if (current !== undefined) return [...current, data]
 			return [data].sort((a, b) => {
@@ -100,15 +105,16 @@ export default function Day({ el, id }: { el: number; id: string }) {
 							return 1
 						})
 						.map((event) => {
-							return (
-								<Event
-									key={event.id}
-									name={event.name}
-									startTime={event.startTime}
-									eventColor={event.eventColor}
-									isAllDay={event.allDay}
-								/>
-							)
+							if (event.currentDate === currentDay)
+								return (
+									<Event
+										key={event.id}
+										name={event.name}
+										startTime={event.startTime}
+										eventColor={event.eventColor}
+										isAllDay={event.allDay}
+									/>
+								)
 						})}
 				</div>
 			</div>
