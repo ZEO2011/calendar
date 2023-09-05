@@ -2,19 +2,33 @@
 import "./styles/style.css"
 
 // Hooks
-import { useState } from "react"
+import { createContext, useState } from "react"
+
+// Types
+import type { Dispatch, SetStateAction } from "react"
 
 // Components
 import Control from "./components/Control"
 import Days from "./components/Days"
 
+type dateContext = {
+	date: Date
+	setDate: Dispatch<SetStateAction<Date>>
+}
+
+// date context
+
+export const MainDate = createContext<dateContext | null>(null)
+
 export default function App() {
-	const [today, setToday] = useState<Date>(new Date())
+	const [date, setDate] = useState<Date>(new Date())
 	return (
 		<>
 			<div className="calendar">
-				<Control today={today} setToday={setToday} />
-				<Days date={today} />
+				<MainDate.Provider value={{ date, setDate }}>
+					<Control />
+					<Days />
+				</MainDate.Provider>
 			</div>
 		</>
 	)

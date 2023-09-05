@@ -1,6 +1,14 @@
 // Types
 import { format } from "date-fns"
 import type { Dispatch, SetStateAction } from "react"
+export type eventType = {
+	name: string | undefined
+	allDay: boolean
+	startTime: string | undefined
+	endTime: string | undefined
+	eventColor: string
+	id: string
+}
 
 // Hooks
 import { FormEvent, useRef, useState } from "react"
@@ -11,17 +19,19 @@ export default function NewEventForm({
 	statusSetter,
 	currentDate,
 	date,
+	getData,
 }: {
 	closeClick: () => void
 	statusSetter: Dispatch<SetStateAction<boolean>>
 	currentDate: number
 	date: Date
+	getData: (data: eventType) => void
 }) {
 	const modalRef = useRef<HTMLDivElement>(null)
 	const nameRef = useRef<HTMLInputElement>(null)
 	const startTimeRef = useRef<HTMLInputElement>(null)
 	const endTimeRef = useRef<HTMLInputElement>(null)
-	const [allDayCheckbox, setAllDayCheckbox] = useState<boolean>()
+	const [allDayCheckbox, setAllDayCheckbox] = useState<boolean>(false)
 	const [eventColor, setEventColor] = useState<string>("blue")
 	function formHandler(e: FormEvent) {
 		e.preventDefault()
@@ -31,13 +41,22 @@ export default function NewEventForm({
 		const chosenEndHour: number = Number(
 			endTimeRef.current?.value.split(":")[0],
 		)
-		const starHour = new Date().setHours(chosenStartHour)
-		const start = format(starHour, "HH")
+		const startHour = new Date().setHours(chosenStartHour)
+		const start = format(startHour, "HH")
 		const endHour = new Date().setHours(chosenEndHour)
 		const end = format(endHour, "HH")
 		if (start > end)
 			return alert("start date must be before the end date")
-		// return statusSetter(false)
+		const event: eventType = {
+			name: nameRef.current?.value,
+			allDay: allDayCheckbox,
+			eventColor: eventColor,
+			startTime: startTimeRef.current?.value,
+			endTime: endTimeRef.current?.value,
+			id: crypto.randomUUID(),
+		}
+		getData(event)
+		return statusSetter(false)
 	}
 	const year = date.getFullYear()
 	const month = date.getMonth()

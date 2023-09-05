@@ -1,31 +1,26 @@
 // libraries
 import { format } from "date-fns"
 
-// types
-import type { Dispatch, SetStateAction } from "react"
+// Hooks
+import useDate from "../hooks/useDate"
 
-export default function Control({
-	today,
-	setToday,
-}: {
-	today: Date
-	setToday: Dispatch<SetStateAction<Date>>
-}) {
+export default function Control() {
+	const { date, setDate } = useDate()
 	/// get the previous month function
 	function previousMonthHandler() {
-		setToday((current) => {
+		setDate((current) => {
 			return new Date(current.setMonth(current.getMonth() - 1))
 		})
 	}
 	/// get the next month function
 	function nextMonthHandler() {
-		setToday((current) => {
+		setDate((current) => {
 			return new Date(current.setMonth(current.getMonth() + 1))
 		})
 	}
 	/// get the current month function
 	function currentMonth() {
-		setToday(new Date())
+		setDate(new Date())
 	}
 	return (
 		<>
@@ -47,9 +42,7 @@ export default function Control({
 						&gt;
 					</button>
 				</div>
-				<span className="month-title">
-					{format(today, "MMM y")}
-				</span>
+				<span className="month-title">{format(date, "MMM y")}</span>
 			</div>
 		</>
 	)

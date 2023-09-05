@@ -1,32 +1,51 @@
 // libraries
 import { format, isSameDay } from "date-fns"
 
-// Types
-import type { ReactNode } from "react"
-
 // Hooks
 import { useState } from "react"
+import useDate from "../hooks/useDate"
 
 // Components
-import NewEventForm from "./NewEventForm"
+import NewEventForm, { eventType } from "./NewEventForm"
+import Event from "./Event"
 
-export default function Day({
-	el,
-	date,
-	children,
-	id,
-}: {
-	el: number
-	date: Date
-	children?: ReactNode
-	id: string
-}) {
+export default function Day({ el, id }: { el: number; id: string }) {
+	const { date } = useDate()
 	const [newEventStatus, setNewEventStatus] = useState<boolean>(false)
+	const [events, setEvents] = useState<eventType[] | undefined>([])
 	function addEventHandler() {
 		setNewEventStatus(true)
 	}
 	function closeNewEventFormHandler() {
 		setNewEventStatus(false)
+	}
+	function getFormData(data: eventType) {
+		setEvents((current) => {
+			if (current !== undefined) return [...current, data]
+			return [data].sort((a, b) => {
+				if (a.startTime === undefined || b.startTime === undefined)
+					return 0
+				const value1 = format(
+					new Date(
+						date.getFullYear(),
+						date.getMonth(),
+						date.getDay(),
+						parseInt(a.startTime.split(":")[0]),
+					),
+					"HH",
+				)
+				const value2 = format(
+					new Date(
+						date.getFullYear(),
+						date.getMonth(),
+						date.getDay(),
+						parseInt(b.startTime.split(":")[0]),
+					),
+					"HH",
+				)
+				return value1 < value2 ? 0 : 1
+			})
+		})
 	}
 	return (
 		<div className="day" id={id}>
@@ -62,9 +81,36 @@ export default function Day({
 						statusSetter={setNewEventStatus}
 						currentDate={el}
 						date={date}
+						getData={getFormData}
 					/>
 				) : null}
-				<div className="events">{children}</div>
+				<div className="events">
+					{events
+						?.sort((a, b) => {
+							if (
+								a.startTime !== undefined &&
+								b.startTime !== undefined
+							) {
+								return a.startTime > b.startTime
+									? 1
+									: a.startTime < b.startTime
+									? -1
+									: 0
+							}
+							return 1
+						})
+						.map((event) => {
+							return (
+								<Event
+									key={event.id}
+									name={event.name}
+									startTime={event.startTime}
+									eventColor={event.eventColor}
+									isAllDay={event.allDay}
+								/>
+							)
+						})}
+				</div>
 			</div>
 		</div>
 	)

@@ -6,8 +6,10 @@ import Day from "./Day"
 
 // Hooks
 import { useId } from "react"
+import useDate from "../hooks/useDate"
 
-export default function Days({ date }: { date: Date }) {
+export default function Days() {
+	const { date } = useDate()
 	const days = Array.from(
 		{ length: lastDayOfMonth(date).getDate() },
 		(_, i) => i + 1,
@@ -20,9 +22,8 @@ export default function Days({ date }: { date: Date }) {
 					<Day
 						id={`${dayId}-${el}`}
 						key={`${dayId}-${el}`}
-						date={date}
 						el={el}
-					></Day>
+					/>
 				)
 			})}
 		</div>
