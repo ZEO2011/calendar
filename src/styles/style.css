@@ -24,6 +24,11 @@ body {
 	margin: 0 auto;
 }
 
+#alert-messages:has(*) {
+	width: 100%;
+	height: 100%;
+}
+
 .calendar {
 	height: 100%;
 	display: flex;

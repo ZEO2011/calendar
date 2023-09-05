@@ -1,5 +1,5 @@
 // Libraries
-import { lastDayOfMonth, isSameDay } from "date-fns"
+import { lastDayOfMonth } from "date-fns"
 
 // Componenets
 import Day from "./Day"
@@ -16,7 +16,14 @@ export default function Days({ date }: { date: Date }) {
 	return (
 		<div className="days">
 			{days.map((el: number) => {
-				return <Day key={`${dayId}-${el}`} date={date} el={el} />
+				return (
+					<Day
+						id={`${dayId}-${el}`}
+						key={`${dayId}-${el}`}
+						date={date}
+						el={el}
+					></Day>
+				)
 			})}
 		</div>
 	)
