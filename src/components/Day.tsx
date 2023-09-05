@@ -24,7 +24,6 @@ export default function Day({ el, id }: { el: number; id: string }) {
 		setNewEventStatus(false)
 	}
 	function getFormData(data: eventType) {
-		console.log(data.currentDate)
 		setEvents((current) => {
 			if (current !== undefined) return [...current, data]
 			return [data].sort((a, b) => {
@@ -85,7 +84,6 @@ export default function Day({ el, id }: { el: number; id: string }) {
 						closeClick={closeNewEventFormHandler}
 						statusSetter={setNewEventStatus}
 						currentDate={el}
-						date={date}
 						getData={getFormData}
 					/>
 				) : null}
@@ -108,11 +106,15 @@ export default function Day({ el, id }: { el: number; id: string }) {
 							if (event.currentDate === currentDay)
 								return (
 									<Event
+										currentDay={currentDay}
 										key={event.id}
 										name={event.name}
 										startTime={event.startTime}
 										eventColor={event.eventColor}
 										isAllDay={event.allDay}
+										eventId={event.id}
+										endTime={event.endTime}
+										eventsSetter={setEvents}
 									/>
 								)
 						})}

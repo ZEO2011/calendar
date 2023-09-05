@@ -1,42 +1,42 @@
 // Types
 import { format } from "date-fns"
-import type { Dispatch, SetStateAction } from "react"
-export type eventType = {
-	name: string | undefined
-	allDay: boolean
-	startTime: string | undefined
-	endTime: string | undefined
-	eventColor: string
-	id: string
-	currentDate: string
-}
+import type { Dispatch, MouseEventHandler, SetStateAction } from "react"
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>> | undefined
 
 // Hooks
 import { FormEvent, useRef, useState } from "react"
 import { createPortal } from "react-dom"
-import useDate from "../hooks/useDate"
+import { eventType } from "./NewEventForm"
 
-export default function NewEventForm({
+export default function EditEventForm({
+	currentDay,
 	closeClick,
+	name,
+	isAllDay,
+	startTime,
+	endTime,
+	defEventColor,
 	statusSetter,
-	currentDate,
 	getData,
 }: {
-	closeClick: () => void
+	currentDay: string
+	name: string | undefined
+	isAllDay: boolean
+	startTime: string | undefined
+	endTime: string | undefined
+	defEventColor: string
+	closeClick: MouseEventHandler<HTMLButtonElement>
 	statusSetter: Dispatch<SetStateAction<boolean>>
-	currentDate: number
-	getData: (data: eventType) => void
+	getData: (data: Omit<eventType, "id">) => void
 }) {
-	const { date } = useDate()
 	const modalRef = useRef<HTMLDivElement>(null)
 	const nameRef = useRef<HTMLInputElement>(null)
 	const startTimeRef = useRef<HTMLInputElement>(null)
 	const endTimeRef = useRef<HTMLInputElement>(null)
-	const [allDayCheckbox, setAllDayCheckbox] = useState<boolean>(false)
-	const [eventColor, setEventColor] = useState<string>("blue")
-	const year = date.getFullYear()
-	const month = date.getMonth()
+	const [allDayCheckbox, setAllDayCheckbox] = useState<boolean>(isAllDay)
+	const [eventColor, setEventColor] = useState<string>(defEventColor)
 	function formHandler(e: FormEvent) {
+		e.preventDefault()
 		e.preventDefault()
 		if (!allDayCheckbox) {
 			const chosenStartHour: number = Number(
@@ -52,17 +52,13 @@ export default function NewEventForm({
 			if (start > end)
 				return alert("start date must be before the end date")
 		}
-		const event: eventType = {
+		const event: Omit<eventType, "id"> = {
 			name: nameRef.current?.value,
 			allDay: allDayCheckbox,
 			eventColor: eventColor,
 			startTime: startTimeRef.current?.value,
 			endTime: endTimeRef.current?.value,
-			id: crypto.randomUUID(),
-			currentDate: format(
-				new Date(year, month, currentDate),
-				"d/MM/YYY",
-			),
+			currentDate: currentDay,
 		}
 		getData(event)
 		return statusSetter(false)
@@ -73,12 +69,9 @@ export default function NewEventForm({
 				<div className="overlay"></div>
 				<div className="modal-body">
 					<div className="modal-title">
-						<div>Add Event</div>
+						<div>Edit Event</div>
 						<small>
-							{format(
-								new Date(year, month, currentDate),
-								"d/M/YYY",
-							)}
+							{format(new Date(currentDay), "d/M/YYY")}
 						</small>
 						<button
 							className="close-btn"
@@ -95,6 +88,7 @@ export default function NewEventForm({
 								name="name"
 								id="name"
 								required
+								defaultValue={name}
 								ref={nameRef}
 							/>
 						</div>
@@ -119,6 +113,7 @@ export default function NewEventForm({
 									type="time"
 									name="start-time"
 									id="start-time"
+									defaultValue={startTime}
 									ref={startTimeRef}
 									disabled={allDayCheckbox}
 									required
@@ -132,6 +127,7 @@ export default function NewEventForm({
 									type="time"
 									name="end-time"
 									id="end-time"
+									defaultValue={endTime}
 									ref={endTimeRef}
 									disabled={allDayCheckbox}
 									required
@@ -146,7 +142,9 @@ export default function NewEventForm({
 									name="color"
 									value="blue"
 									id="blue"
-									defaultChecked
+									defaultChecked={
+										defEventColor === "blue"
+									}
 									className="color-radio"
 									onClick={(e) =>
 										setEventColor(
@@ -165,6 +163,9 @@ export default function NewEventForm({
 									value="red"
 									id="red"
 									className="color-radio"
+									defaultChecked={
+										defEventColor === "red"
+									}
 									onClick={(e) =>
 										setEventColor(
 											e.currentTarget.value,
@@ -182,6 +183,9 @@ export default function NewEventForm({
 									value="green"
 									id="green"
 									className="color-radio"
+									defaultChecked={
+										defEventColor === "green"
+									}
 									onClick={(e) =>
 										setEventColor(
 											e.currentTarget.value,
@@ -200,7 +204,13 @@ export default function NewEventForm({
 								className="btn btn-success"
 								type="submit"
 							>
-								Add
+								edit
+							</button>
+							<button
+								onClick={() => getData(undefined)}
+								className="btn btn-delete"
+							>
+								delete
 							</button>
 						</div>
 					</form>
