@@ -8,6 +8,7 @@ export type eventType = {
 	endTime: string | undefined
 	eventColor: string
 	id: string
+	currentDate: Date
 }
 
 // Hooks
@@ -54,6 +55,7 @@ export default function NewEventForm({
 			startTime: startTimeRef.current?.value,
 			endTime: endTimeRef.current?.value,
 			id: crypto.randomUUID(),
+			currentDate: date,
 		}
 		getData(event)
 		return statusSetter(false)
@@ -139,7 +141,7 @@ export default function NewEventForm({
 									name="color"
 									value="blue"
 									id="blue"
-									checked
+									defaultChecked
 									className="color-radio"
 									onClick={(e) =>
 										setEventColor(

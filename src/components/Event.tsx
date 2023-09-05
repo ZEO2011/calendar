@@ -13,12 +13,18 @@ export default function Event({
 	isAllDay: boolean
 }) {
 	const { date } = useDate()
-	const value = startTime !== undefined ? parseInt(startTime) : undefined
-	const hour = format(
-		new Date(date.getFullYear(), date.getMonth(), date.getDay(), value),
-		"hh:mm",
-	)
-
+	const value = startTime !== undefined ? parseInt(startTime) : 0
+	let hour
+	if (!isAllDay)
+		hour = format(
+			new Date(
+				date.getFullYear(),
+				date.getMonth(),
+				date.getDay(),
+				value,
+			),
+			"hh:mm",
+		)
 	return (
 		<>
 			<button
