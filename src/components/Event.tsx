@@ -61,6 +61,9 @@ export default function Event({
 		})
 	}
 	function delData(id: string) {
+		if (JSON.parse(`${localStorage.getItem("events")}`).length === 1) {
+			localStorage.setItem("events", "[]")
+		}
 		setEvents((current) => {
 			return current?.filter((el) => {
 				return el.id != id

@@ -38,6 +38,14 @@ export default function Days() {
 			localStorage.setItem("events", JSON.stringify([]))
 		}
 	}, [])
+	useEffect(() => {
+		const saved: eventType[] = JSON.parse(
+			`${localStorage.getItem("events")}`,
+		)
+		if (events?.length !== 0)
+			return localStorage.setItem("events", JSON.stringify(events))
+		return setEvents(saved)
+	}, [events])
 	return (
 		<div className="days">
 			<MainEvents.Provider value={{ events, setEvents }}>

@@ -9,6 +9,7 @@ export type eventType = {
 	eventColor: string
 	id: string
 	currentDate: string
+	saved?: boolean
 }
 
 // Hooks
