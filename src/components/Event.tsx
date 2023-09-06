@@ -1,8 +1,9 @@
 import { format } from "date-fns"
-import useDate from "../hooks/useDate"
-import { Dispatch, SetStateAction, useState } from "react"
+import useDate from "../contexts/useDate"
+import { useState } from "react"
 import EditEventForm from "./EditEventForm"
 import { eventType } from "./NewEventForm"
+import useEvents from "../contexts/useEvents"
 
 export default function Event({
 	eventColor,
@@ -12,7 +13,6 @@ export default function Event({
 	eventId,
 	endTime,
 	currentDay,
-	eventsSetter,
 }: {
 	eventColor: string
 	startTime: string | undefined
@@ -21,8 +21,8 @@ export default function Event({
 	isAllDay: boolean
 	eventId: string
 	currentDay: string
-	eventsSetter: Dispatch<SetStateAction<eventType[] | undefined>>
 }) {
+	const { setEvents } = useEvents()
 	const { date } = useDate()
 	const [editEventStatus, setEditEventStatus] = useState<boolean>(false)
 	const value = startTime !== undefined ? parseInt(startTime) : 0
@@ -41,9 +41,9 @@ export default function Event({
 		setEditEventStatus(true)
 	}
 	function getData(data: Omit<eventType, "id"> | undefined) {
-		eventsSetter((current) => {
+		setEvents((current) => {
 			return current?.map((event) => {
-				if (data !== undefined) {
+				if (data !== null && data !== undefined) {
 					if (event.id == eventId) {
 						event = {
 							id: eventId,
@@ -55,10 +55,15 @@ export default function Event({
 							eventColor: data.eventColor,
 						}
 					}
-				} else {
-					current.splice(current.indexOf(event), 1)
 				}
 				return event
+			})
+		})
+	}
+	function delData(id: string) {
+		setEvents((current) => {
+			return current?.filter((el) => {
+				return el.id != id
 			})
 		})
 	}
@@ -89,6 +94,8 @@ export default function Event({
 					defEventColor={eventColor}
 					getData={getData}
 					statusSetter={setEditEventStatus}
+					delData={delData}
+					eventId={eventId}
 				/>
 			) : null}
 		</>

@@ -14,7 +14,7 @@ export type eventType = {
 // Hooks
 import { FormEvent, useRef, useState } from "react"
 import { createPortal } from "react-dom"
-import useDate from "../hooks/useDate"
+import useDate from "../contexts/useDate"
 
 export default function NewEventForm({
 	closeClick,

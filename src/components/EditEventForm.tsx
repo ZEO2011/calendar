@@ -18,6 +18,8 @@ export default function EditEventForm({
 	defEventColor,
 	statusSetter,
 	getData,
+	delData,
+	eventId,
 }: {
 	currentDay: string
 	name: string | undefined
@@ -27,7 +29,9 @@ export default function EditEventForm({
 	defEventColor: string
 	closeClick: MouseEventHandler<HTMLButtonElement>
 	statusSetter: Dispatch<SetStateAction<boolean>>
-	getData: (data: Omit<eventType, "id">) => void
+	getData: (data?: Omit<eventType, "id">) => void
+	delData: (id: string) => void
+	eventId: string
 }) {
 	const modalRef = useRef<HTMLDivElement>(null)
 	const nameRef = useRef<HTMLInputElement>(null)
@@ -62,6 +66,9 @@ export default function EditEventForm({
 		}
 		getData(event)
 		return statusSetter(false)
+	}
+	function deleteEvent() {
+		delData(eventId)
 	}
 	return createPortal(
 		<>
@@ -207,7 +214,7 @@ export default function EditEventForm({
 								edit
 							</button>
 							<button
-								onClick={() => getData(undefined)}
+								onClick={deleteEvent}
 								className="btn btn-delete"
 							>
 								delete

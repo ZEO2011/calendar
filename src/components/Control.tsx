@@ -2,7 +2,7 @@
 import { format } from "date-fns"
 
 // Hooks
-import useDate from "../hooks/useDate"
+import useDate from "../contexts/useDate"
 
 export default function Control() {
 	const { date, setDate } = useDate()

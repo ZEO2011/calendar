@@ -3,7 +3,8 @@ import { format, isSameDay } from "date-fns"
 
 // Hooks
 import { useState } from "react"
-import useDate from "../hooks/useDate"
+import useDate from "../contexts/useDate"
+import useEvents from "../contexts/useEvents"
 
 // Components
 import NewEventForm, { eventType } from "./NewEventForm"
@@ -12,7 +13,7 @@ import Event from "./Event"
 export default function Day({ el, id }: { el: number; id: string }) {
 	const { date } = useDate()
 	const [newEventStatus, setNewEventStatus] = useState<boolean>(false)
-	const [events, setEvents] = useState<eventType[] | undefined>([])
+	const { events, setEvents } = useEvents()
 	const currentDay = format(
 		new Date(date.getFullYear(), date.getMonth(), el),
 		"d/MM/YYY",
@@ -114,7 +115,6 @@ export default function Day({ el, id }: { el: number; id: string }) {
 										isAllDay={event.allDay}
 										eventId={event.id}
 										endTime={event.endTime}
-										eventsSetter={setEvents}
 									/>
 								)
 						})}
