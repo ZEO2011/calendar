@@ -1,12 +1,12 @@
 // Types
-import { format } from "date-fns"
-import type { Dispatch, MouseEventHandler, SetStateAction } from "react"
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>> | undefined
+import { format } from "date-fns";
+import type { Dispatch, MouseEventHandler, SetStateAction } from "react";
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>> | undefined;
 
 // Hooks
-import { FormEvent, useRef, useState } from "react"
-import { createPortal } from "react-dom"
-import { eventType } from "./NewEventForm"
+import { FormEvent, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { eventType } from "./NewEventForm";
 
 export default function EditEventForm({
 	currentDay,
@@ -21,40 +21,40 @@ export default function EditEventForm({
 	delData,
 	eventId,
 }: {
-	currentDay: string
-	name: string | undefined
-	isAllDay: boolean
-	startTime: string | undefined
-	endTime: string | undefined
-	defEventColor: string
-	closeClick: MouseEventHandler<HTMLButtonElement>
-	statusSetter: Dispatch<SetStateAction<boolean>>
-	getData: (data?: Omit<eventType, "id">) => void
-	delData: (id: string) => void
-	eventId: string
+	currentDay: string;
+	name: string | undefined;
+	isAllDay: boolean;
+	startTime: string | undefined;
+	endTime: string | undefined;
+	defEventColor: string;
+	closeClick: MouseEventHandler<HTMLButtonElement>;
+	statusSetter: Dispatch<SetStateAction<boolean>>;
+	getData: (data?: Omit<eventType, "id">) => void;
+	delData: (id: string) => void;
+	eventId: string;
 }) {
-	const modalRef = useRef<HTMLDivElement>(null)
-	const nameRef = useRef<HTMLInputElement>(null)
-	const startTimeRef = useRef<HTMLInputElement>(null)
-	const endTimeRef = useRef<HTMLInputElement>(null)
-	const [allDayCheckbox, setAllDayCheckbox] = useState<boolean>(isAllDay)
-	const [eventColor, setEventColor] = useState<string>(defEventColor)
+	const modalRef = useRef<HTMLDivElement>(null);
+	const nameRef = useRef<HTMLInputElement>(null);
+	const startTimeRef = useRef<HTMLInputElement>(null);
+	const endTimeRef = useRef<HTMLInputElement>(null);
+	const [allDayCheckbox, setAllDayCheckbox] = useState<boolean>(isAllDay);
+	const [eventColor, setEventColor] = useState<string>(defEventColor);
 	function formHandler(e: FormEvent) {
-		e.preventDefault()
-		e.preventDefault()
+		e.preventDefault();
+		e.preventDefault();
 		if (!allDayCheckbox) {
 			const chosenStartHour: number = Number(
 				startTimeRef.current?.value.split(":")[0],
-			)
+			);
 			const chosenEndHour: number = Number(
 				endTimeRef.current?.value.split(":")[0],
-			)
-			const startHour = new Date().setHours(chosenStartHour)
-			const start = format(startHour, "HH")
-			const endHour = new Date().setHours(chosenEndHour)
-			const end = format(endHour, "HH")
+			);
+			const startHour = new Date().setHours(chosenStartHour);
+			const start = format(startHour, "HH");
+			const endHour = new Date().setHours(chosenEndHour);
+			const end = format(endHour, "HH");
 			if (start > end)
-				return alert("start date must be before the end date")
+				return alert("start date must be before the end date");
 		}
 		const event: Omit<eventType, "id"> = {
 			name: nameRef.current?.value,
@@ -63,12 +63,12 @@ export default function EditEventForm({
 			startTime: startTimeRef.current?.value,
 			endTime: endTimeRef.current?.value,
 			currentDate: currentDay,
-		}
-		getData(event)
-		return statusSetter(false)
+		};
+		getData(event);
+		return statusSetter(false);
 	}
 	function deleteEvent() {
-		delData(eventId)
+		delData(eventId);
 	}
 	return createPortal(
 		<>
@@ -77,9 +77,7 @@ export default function EditEventForm({
 				<div className="modal-body">
 					<div className="modal-title">
 						<div>Edit Event</div>
-						<small>
-							{format(new Date(currentDay), "d/M/YYY")}
-						</small>
+						<small>{currentDay}</small>
 						<button
 							className="close-btn"
 							onClick={closeClick}
@@ -106,7 +104,9 @@ export default function EditEventForm({
 								id="all-day"
 								checked={allDayCheckbox}
 								onChange={(e) => {
-									setAllDayCheckbox(e.target.checked)
+									setAllDayCheckbox(
+										e.target.checked,
+									);
 								}}
 							/>
 							<label htmlFor="all-day">All Day?</label>
@@ -225,5 +225,5 @@ export default function EditEventForm({
 			</div>
 		</>,
 		document.getElementById("alert-messages") as Element,
-	)
+	);
 }
