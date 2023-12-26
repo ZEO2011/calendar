@@ -27,6 +27,7 @@ export default function Day({ el, id }: { el: number; id: string }) {
     function closeNewEventFormHandler() {
         setNewEventStatus(false)
     }
+
     const [showMoreModel, setShowMoreModal] = useState<boolean>(false)
     const [moreEventsBtn, setMoreEventsBtn] = useState<{ isOverflow: boolean, overFlowAt: number }>({ isOverflow: false, overFlowAt: 0 })
     const checkOverflow = () => {
@@ -64,6 +65,10 @@ export default function Day({ el, id }: { el: number; id: string }) {
             setMoreEventsBtn({ isOverflow: false, overFlowAt: 0 })
         }
     }
+    useEffect(() => {
+        const resizeObserver = new ResizeObserver(checkOverflow)
+        resizeObserver.observe(dayRef.current!)
+    }, [])
     useEffect(checkOverflow, [checkOverflow])
     useEffect(() => {
         addEventListener("resize", checkOverflow)
